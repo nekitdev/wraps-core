@@ -96,7 +96,7 @@ jobs:
         uses: yezz123/setup-uv@v4
 
       - name: Build
-        run: uv build
+        run: uv run hatch build
 
       - name: Upload packages
         uses: actions/upload-artifact@v4

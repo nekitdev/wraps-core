@@ -1,3 +1,5 @@
+"""Various markers."""
+
 from typing import Optional
 
 from typing_extensions import Never

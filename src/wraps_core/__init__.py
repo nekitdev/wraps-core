@@ -1,3 +1,13 @@
+"""Core functionality of wraps."""
+
+__description__ = "Core functionality of wraps."
+__url__ = "https://github.com/nekitdev/wraps-core"
+
+__title__ = "wraps_core"
+__author__ = "nekitdev"
+__license__ = "MIT"
+__version__ = "0.1.0"
+
 from wraps_core.early import (
     EarlyOption,
     EarlyResult,

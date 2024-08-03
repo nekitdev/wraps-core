@@ -1,3 +1,5 @@
+"""Various type aliases."""
+
 from typing import Callable, TypeVar
 
 from typing_aliases import AsyncCallable
