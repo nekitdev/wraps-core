@@ -70,7 +70,7 @@ def divide(numerator: float, denominator: float) -> Option[float]:
 There are two ways to process the resulting option: either via pattern matching or predicates.
 
 ```python
-# matching.py
+# option_matching.py
 
 from wraps_core import Null, Some
 
@@ -79,14 +79,16 @@ from option import divide
 DIVISION_BY_ZERO = "division by zero"
 
 match divide(1.0, 2.0):
-    case Some(result):
-        print(result)
+    case Some(value):
+        print(value)
 
     case Null():
         print(DIVISION_BY_ZERO)
 ```
 
 ```python
+# option_predicates.py
+
 from option import divide
 
 DIVISION_BY_ZERO = "division by zero"
@@ -94,11 +96,11 @@ DIVISION_BY_ZERO = "division by zero"
 option = divide(1.0, 2.0)
 
 if option.is_some():
-    # here we know that the option is `Some[float]`, so it is safe to unwrap it
+    # here we know that the `option` is `Some[float]`, so it is safe to unwrap it
     print(option.unwrap())
 
 else:
-    # and here we know that the option is `Null`
+    # and here we know that the `option` is `Null`
     print(DIVISION_BY_ZERO)
 ```
 
@@ -114,6 +116,8 @@ Below is the enhanced `divide` function from above, now using `Result[float, Div
 instead of `Option[float]`.
 
 ```python
+# result.py
+
 from enum import Enum
 
 from wraps_core import Error, Ok, Result
@@ -125,6 +129,39 @@ class DivideError(Enum):
 
 def divide(numerator: float, denominator: float) -> Result[float, DivideError]:
     return Ok(numerator / denominator) if denominator else Error(DivideError.DIVISION_BY_ZERO)
+```
+
+Using new `divide` is as simple as the old one:
+
+```python
+# result_matching.py
+
+from wraps_core import Error, Ok
+
+from result import divide
+
+match divide(1.0, 2.0):
+    case Ok(value):
+        print(value)
+
+    case Error(error):
+        print(error.value)  # we use `value` here to get error details
+```
+
+```python
+# result_predicates.py
+
+from result import divide
+
+result = divide(1.0, 2.0)
+
+if result.is_ok():
+    # here we know the `result` is `Ok[float]`, so we can unwrap it safely
+    print(result.unwrap())
+
+else:
+    # and here the `result` is `Error[DivideError]`, so we can unwrap the error safely
+    print(result.unwrap_error().value)
 ```
 
 ### Early Return
