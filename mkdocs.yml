@@ -67,7 +67,7 @@ plugins:
           import:
             - https://docs.python.org/3/objects.inv
             - https://nekitdev.github.io/typing-aliases/objects.inv
-            - https://nekitdev.github.io/wraps-futures/objects.inv
+            - https://nekitdev.github.io/wraps-futures-core/objects.inv
 
 markdown_extensions:
   - pymdownx.highlight

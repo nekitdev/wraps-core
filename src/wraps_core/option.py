@@ -7,7 +7,7 @@ contains a value, or [`Null`][wraps_core.option.Null], and does not.
 [`Option[T]`][wraps_core.option.Option] types can be very common in python code,
 as they have a number of uses:
 
-- Initial values (see [`ReAwaitable[T]`][wraps_futures.reawaitable.ReAwaitable]);
+- Initial values (see [`ReAwaitable[T]`][wraps_futures_core.reawaitable.ReAwaitable]);
 - Return values for functions not defined over their entire input range (partial functions);
 - Return value for otherwise reporting simple errors, where [`Null`][wraps_core.option.Null]
   is returned on error;
