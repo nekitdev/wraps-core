@@ -54,7 +54,7 @@ $ uv add wraps-core
 [`Some[T]`][wraps_core.option.Some] and contains a value, or [`Null`][wraps_core.option.Null],
 and does not.
 
-Here is an example of `divide` function returning `Option[T]` instead of raising an error when
+Here is an example of `divide` function returning `Option[float]` instead of raising an error when
 the denominator is zero:
 
 ```python
