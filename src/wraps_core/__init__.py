@@ -6,7 +6,7 @@ __url__ = "https://github.com/nekitdev/wraps-core"
 __title__ = "wraps_core"
 __author__ = "nekitdev"
 __license__ = "MIT"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 from wraps_core.early import (
     EarlyOption,

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wraps-core"
-version = "0.1.1"
+version = "0.2.0"
 description = "Core functionality of wraps."
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -101,7 +101,7 @@ testpaths = ["tests"]
 
 [tool.changelogging.context]
 name = "wraps-core"
-version = "0.1.1"
+version = "0.2.0"
 url = "https://github.com/nekitdev/wraps-core"
 
 [tool.changelogging.formats]
