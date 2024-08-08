@@ -164,18 +164,20 @@ else:
     print(result.unwrap_error().value)
 ```
 
+### Decorators
+
 ### Early Return
 
-Early return functionality (like the *question mark* (`?`) operator in Rust) is implemented via `early` methods
-(for both [`Option[T]`][wraps_core.option.Option] and [`Result[T, E]`][wraps_core.result.Result] types)
-combined with the [`@early_option`][wraps_core.early.decorators.early_option] and
+Early return functionality (like the *question mark* (`?`) operator in Rust) is implemented via
+`early` methods (for both [`Option[T]`][wraps_core.option.Option]
+and [`Result[T, E]`][wraps_core.result.Result] types) combined with the
+[`@early_option`][wraps_core.early.decorators.early_option] and
 [`@early_result`][wraps_core.early.decorators.early_result] decorators respectively.
 
-Here is an example using [`wraps-decorators`][wraps-decorators] feature:
+Here is an example using [`wrap_option_on`][wraps_core.option.wrap_option_on] to catch errors:
 
 ```python
-from wraps_core import Option, early_option
-from wraps_decorators import wrap_option_on
+from wraps_core import Option, early_option, wrap_option_on
 
 
 @wrap_option_on(ValueError)
@@ -251,6 +253,8 @@ If you are interested in contributing to `wraps-core`, make sure to take a look 
 [wraps_core.option.Option]: https://nekitdev.github.io/wraps-core/reference/option#wraps_core.option.Option
 [wraps_core.option.Some]: https://nekitdev.github.io/wraps-core/reference/option#wraps_core.option.Some
 [wraps_core.option.Null]: https://nekitdev.github.io/wraps-core/reference/option#wraps_core.option.Null
+
+[wraps_core.option.wrap_option_on]: https://nekitdev.github.io/wraps-core/reference/option#wraps_core.option.wrap_option_on
 
 [wraps_core.result.Result]: https://nekitdev.github.io/wraps-core/reference/result#wraps_core.result.Result
 [wraps_core.result.Ok]: https://nekitdev.github.io/wraps-core/reference/result#wraps_core.result.Ok
