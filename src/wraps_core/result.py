@@ -47,38 +47,56 @@ from __future__ import annotations
 from typing import (
     AsyncIterable,
     AsyncIterator,
+    Generic,
     Iterable,
     Iterator,
     Literal,
     Protocol,
+    Type,
     TypeVar,
     Union,
     final,
 )
 
 from attrs import frozen
+from funcs.decorators import wraps
 from funcs.functions import identity
 from typing_aliases import (
     AnyError,
+    AsyncCallable,
     AsyncInspect,
     AsyncNullary,
     AsyncPredicate,
     AsyncUnary,
     Inspect,
+    NormalError,
     Nullary,
     Predicate,
     Unary,
     required,
 )
-from typing_extensions import Never, ParamSpec, TypeIs
+from typing_extensions import Callable, Never, ParamSpec, TypeIs
 
+from wraps_core.errors import ErrorTypes
 from wraps_core.iters import async_empty, async_once, empty, once
 from wraps_core.panics import panic
 from wraps_core.reprs import wrap_repr
 
-__all__ = ("Result", "Ok", "Error", "is_ok", "is_error")
-
-P = ParamSpec("P")
+__all__ = (
+    # result
+    "Result",
+    "Ok",
+    "Error",
+    "is_ok",
+    "is_error",
+    # decorators
+    "WrapResult",
+    "WrapResultAwait",
+    "wrap_result_on",
+    "wrap_result_await_on",
+    "wrap_result",
+    "wrap_result_await",
+)
 
 T = TypeVar("T", covariant=True)
 U = TypeVar("U")
@@ -1941,3 +1959,122 @@ def is_error(result: Result[T, E]) -> TypeIs[Error[E]]:
 from wraps_core.early.errors import EarlyResult
 from wraps_core.either import Either, Left, Right
 from wraps_core.option import NULL, Null, Option, Some
+from wraps_core.typing import ResultAsyncCallable, ResultCallable
+
+P = ParamSpec("P")
+
+A = TypeVar("A", bound=AnyError)
+
+
+@final
+@frozen()
+class WrapResult(Generic[A]):
+    """Wraps functions returning `T` into functions returning
+    [`Result[T, E]`][wraps_core.result.Result].
+
+    Errors are handled via returning [`Error(error)`][wraps_core.result.Error] on `error` of
+    [`error_types`][wraps_core.result.WrapResult.error_types], wrapping the resulting
+    `value` into [`Ok(value)`][wraps_core.result.Ok].
+    """
+
+    error_types: ErrorTypes[A]
+    """The error types to handle. See [`ErrorTypes[A]`][wraps_core.errors.ErrorTypes]."""
+
+    def __call__(self, function: Callable[P, T]) -> ResultCallable[P, T, A]:
+        @wraps(function)
+        def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, A]:
+            try:
+                return Ok(function(*args, **kwargs))
+
+            except self.error_types.extract() as error:
+                return Error(error)
+
+        return wrap
+
+
+def wrap_result_on(head: Type[A], *tail: Type[A]) -> WrapResult[A]:
+    """Creates [`WrapResult[A]`][wraps_core.result.WrapResult] decorators.
+
+    This function enforces at least one error type to be provided.
+
+    Example:
+        ```python
+        @wrap_result_on(ValueError)
+        def parse(string: str) -> int:
+            return int(string)
+
+        assert parse("128").is_ok()
+        assert parse("owo").is_error()
+        ```
+
+    Arguments:
+        head: The head of the error types to handle.
+        *tail: The tail of the error types to handle.
+
+    Returns:
+        The [`WrapResult[A]`][wraps_core.result.WrapResult] decorator created.
+    """
+    return WrapResult(ErrorTypes[A].from_head_and_tail(head, *tail))
+
+
+wrap_result = wrap_result_on(NormalError)
+"""An instance of [`WrapResult[NormalError]`][wraps_core.result.WrapResult]
+(see [`NormalError`][typing_aliases.NormalError]).
+"""
+
+
+@final
+@frozen()
+class WrapResultAwait(Generic[A]):
+    """Wraps asynchronous functions returning `T` into asynchronous functions returning
+    [`Result[T, E]`][wraps_core.result.Result].
+
+    Errors are handled via returning [`Error(error)`][wraps_core.result.Error] on `error` of
+    [`error_types`][wraps_core.result.WrapResult.error_types], wrapping the resulting
+    `value` into [`Ok(value)`][wraps_core.result.Ok].
+    """
+
+    error_types: ErrorTypes[A]
+    """The error types to handle. See [`ErrorTypes[A]`][wraps_core.errors.ErrorTypes]."""
+
+    def __call__(self, function: AsyncCallable[P, T]) -> ResultAsyncCallable[P, T, A]:
+        @wraps(function)
+        async def wrap(*args: P.args, **kwargs: P.kwargs) -> Result[T, A]:
+            try:
+                return Ok(await function(*args, **kwargs))
+
+            except self.error_types.extract() as error:
+                return Error(error)
+
+        return wrap
+
+
+def wrap_result_await_on(head: Type[A], *tail: Type[A]) -> WrapResultAwait[A]:
+    """Creates [`WrapResultAwait[A]`][wraps_core.result.WrapResultAwait] decorators.
+
+    This function enforces at least one error type to be provided.
+
+    Example:
+        ```python
+        @wrap_result_await_on(ValueError)
+        async def parse(string: str) -> int:
+            return int(string)
+
+        assert (await parse("128")).is_ok()
+        assert (await parse("owo")).is_error()
+        ```
+
+    Arguments:
+        head: The head of the error types to handle.
+        *tail: The tail of the error types to handle.
+
+    Returns:
+        The [`WrapResultAwait[A]`][wraps_core.result.WrapResultAwait] decorator created.
+    """
+    return WrapResultAwait(ErrorTypes[A].from_head_and_tail(head, *tail))
+
+
+wrap_result_await = wrap_result_await_on(NormalError)
+"""An instance of [`WrapResultAwait[NormalError]`][wraps_core.result.WrapResultAwait]
+(see [`NormalError`][typing_aliases.NormalError]).
+"""
