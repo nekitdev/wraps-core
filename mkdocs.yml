@@ -19,6 +19,7 @@ nav:
       - Early:
           - Decorators: "reference/early/decorators.md"
           - Errors: "reference/early/errors.md"
+      - Errors: "reference/errors.md"
   - Internals: "internals.md"
   - Changelog: "changelog.md"
   - Security: "security.md"
