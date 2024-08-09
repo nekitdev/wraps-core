@@ -61,7 +61,7 @@ dev-dependencies = [
     "mkdocs-material >= 9.5.29",
     "mkdocstrings[python] >= 0.25.1",
     # changelogs
-    "changelogging >= 2.4.1",
+    "changelogging >= 2.4.3",
 ]
 
 [tool.ruff]
