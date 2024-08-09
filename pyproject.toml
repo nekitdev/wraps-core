@@ -50,7 +50,7 @@ Repository = "https://github.com/nekitdev/wraps-core"
 [tool.uv]
 dev-dependencies = [
     # checks
-    "ruff >= 0.5.6",
+    "ruff >= 0.5.7",
     "mypy >= 1.11.1",
     # tests
     "coverage >= 7.6.0",
